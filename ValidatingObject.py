@@ -20,3 +20,6 @@ class ValidatingObject:
 
             if invalid_params:
                 raise Exception('The following params are invalid: {}'.format(invalid_params))
+
+    def validate(self):
+        raise Exception('Validate is not defined in inheriting class. This is a virtual function.')

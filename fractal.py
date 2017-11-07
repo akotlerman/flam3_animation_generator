@@ -10,7 +10,7 @@ def instantiate_points(point_count):
     """
     Creates points on a unit circle of count pointCount
     The radius of this circle is 1
-    :int point_count: Number of points on unit circle
+    :param point_count: Integer, Number of points on unit circle
     """
     points = np.zeros((point_count, 2))
     for i in range(point_count):
@@ -46,7 +46,7 @@ def choices(selection_limiter):
           two previously chosen choices
 
 
-    :boolean[:] selection_limiter: Limiter array
+    :param selection_limiter: Limiter array
     """
     point_count = len(selection_limiter)
     choice = random.randint(0, point_count - 1)
