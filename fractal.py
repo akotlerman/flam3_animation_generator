@@ -2,7 +2,6 @@ import math
 import numba as nb
 import numpy as np
 import random
-from ValidatingObject import ValidatingObject
 
 
 @nb.jit(nopython=True)
@@ -33,7 +32,6 @@ def choices(selection_limiter):
     If selection_limiter[1] = True then the new choice has to be at least
     2 points away.
 
-    TODO: Cache choices.
     TODO: Change selection_limiter to array of int such that the following numbers
     denote an action dependent on the cache of choices:
         - selection_limiter[0] = 0
@@ -72,16 +70,37 @@ def choices(selection_limiter):
 
 @nb.jit(nb.types.UniTuple(nb.float64, 2)(nb.float64, nb.float64, nb.float64, nb.float64, nb.int16), nopython=True)
 def create_point(point_x, point_y, edge_x, edge_y, scaling_factor=2):
+    """
+    Creates a point using [scaling] averages
+    :param point_x: float
+    :param point_y: float
+    :param edge_x: float
+    :param edge_y: float
+    :param scaling_factor: int
+    :return: (float, float)
+    """
+    # TODO: Geometric mean??
     return (point_x + edge_x) / scaling_factor, (point_y + edge_y) / scaling_factor
 
 
 @nb.jit(nopython=True)
-def fractal_loop(selection_limiter, scaling_factor, iters, dry_fire, point_count):
+def fractal_loop(selection_limiter, scaling_factor, run_count, dry_fire, point_count):
+    """
+
+    :param selection_limiter: Array of Boolean values of length point_count
+    :param scaling_factor: Integer to pass to create_point function
+    :param run_count: Integer that dictates number of points to generate
+    :param dry_fire:  Integer that dictates number of point to ignore initially
+    :param point_count: Integer that dictates number of points on unit circle
+    :return:
+    """
+    # TODO: rename point_count to edge_count?
+    # TODO: rename run_count to point_count?
     gen_choice = choices(selection_limiter)
     point = (random.uniform(-1, 1), random.uniform(-1, 1))
     points_array = instantiate_points(point_count)
-    mat = np.zeros((iters, 2))
-    for i in range(-dry_fire, iters):
+    mat = np.zeros((run_count, 2))
+    for i in range(-dry_fire, run_count):
         choice = points_array[next(gen_choice)]
         point = create_point(point[0], point[1], choice[0], choice[1],
                              scaling_factor=scaling_factor)
@@ -90,17 +109,19 @@ def fractal_loop(selection_limiter, scaling_factor, iters, dry_fire, point_count
     return mat
 
 
-class Fractal(ValidatingObject):
+class Fractal(object):
     """
-    A ValidatingObject with a set of default PARAMS to create a nice-looking
-    Sierpinski triangle.
+    Create a nice-looking Sierpinski triangle.
+    run_count=50000, dry_fire=1000, point_count=3, scaling_factor=2, selection_limiter=None
     """
-    PARAMS = {'run_count': 50000, 'dry_fire': 1000, 'point_count': 3,
-              'scaling_factor': 2, 'selection_limiter': None}
+    # TODO: scale run_count dynamically with point_count and selection_limiter
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.__dict__.update(self.__class__.PARAMS)
+    def __init__(self, run_count=50000, dry_fire=1000, point_count=3, scaling_factor=2, selection_limiter=None):
+        self.run_count = run_count
+        self.dry_fire = dry_fire
+        self.point_count = point_count
+        self.scaling_factor = scaling_factor
+        self.selection_limiter = selection_limiter
         self.validate()
 
     def validate(self):
@@ -115,5 +136,6 @@ class Fractal(ValidatingObject):
 
     def execute(self):
         self.validate()
+        print(self.point_count)
         return fractal_loop(self.selection_limiter, self.scaling_factor, self.run_count,
                             self.dry_fire, self.point_count)

@@ -1,11 +1,10 @@
 from moviepy.editor import VideoClip
 from copy import deepcopy
-from ValidatingObject import ValidatingObject
 from fractal import Fractal
 from utils import mat_to_color, point_to_image_mat
 
 
-class FractalAnimator(ValidatingObject):
+class FractalAnimator(object):
     """
     This class handles animating objects using the Fractal class.
     When generating movies, this class will be responsible for generating the correct number
@@ -26,9 +25,10 @@ class FractalAnimator(ValidatingObject):
     # TODO: Currently the parameters are varied linearly. Offer option to change them along a custom curve
     PARAMS = {'fps': 24, 'resolution': (500, 500), 'duration': 3}
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.__dict__.update(self.__class__.PARAMS)
+    def __init__(self, fps=24, resolution=(500, 500), duration=3):
+        self.fps = fps
+        self.resolution = resolution
+        self.duration = duration
         self.validate()
 
     def __generate_movie(self, fractal_params):
@@ -60,7 +60,7 @@ class FractalAnimator(ValidatingObject):
             mat_points = next(gen_movie)
             return mat_to_color(point_to_image_mat(mat_points))
 
-        clip = VideoClip(make_frame, duration=self.duration)  # 3-second clip
+        clip = VideoClip(make_frame, duration=self.duration)  # duration-second clip
         # clip.write_videofile("my_animation.mp4", fps=24) # export as video
         clip.write_gif(file_name, fps=self.fps)  # export as GIF
 
