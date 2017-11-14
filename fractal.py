@@ -69,18 +69,18 @@ def choices(selection_limiter):
 
 
 @nb.jit(nb.types.UniTuple(nb.float64, 2)(nb.float64, nb.float64, nb.float64, nb.float64, nb.int16), nopython=True)
-def create_point(point_x, point_y, edge_x, edge_y, scaling_factor=2):
+def create_point(point_x, point_y, vertex_x, edge_y, scaling_factor=2):
     """
     Creates a point using [scaling] averages
     :param point_x: float
     :param point_y: float
-    :param edge_x: float
+    :param vertex_x: float
     :param edge_y: float
     :param scaling_factor: int
     :return: (float, float)
     """
     # TODO: Geometric mean??
-    return (point_x + edge_x) / scaling_factor, (point_y + edge_y) / scaling_factor
+    return (point_x + vertex_x) / scaling_factor, (point_y + edge_y) / scaling_factor
 
 
 @nb.jit(nopython=True)
@@ -131,11 +131,10 @@ class Fractal(object):
         if self.selection_limiter is None:
             self.selection_limiter = [False] * self.point_count
 
-        if len(self.selection_limiter) != self.point_count:
-            raise Exception('Selection limiter is not equal to point count!')
+        #if len(self.selection_limiter) != self.point_count:
+        #    raise Exception('Selection limiter is not equal to point count!')
 
     def execute(self):
         self.validate()
-        print(self.point_count)
         return fractal_loop(self.selection_limiter, self.scaling_factor, self.run_count,
                             self.dry_fire, self.point_count)
