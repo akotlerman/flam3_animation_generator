@@ -2,7 +2,6 @@ from utils import mat_to_color, point_to_image_mat
 from fractal import Fractal
 import matplotlib.pyplot as plt
 import click
-from collections import Iterable
 
 
 @click.group()
@@ -15,6 +14,8 @@ def validate_selection_limiter(ctx, param, value):
         if value is not None:
             point_count = ctx.params['point_count']
             values = [int(v) for v in value.split(',') if v]
+            while len(values) < point_count:
+                values.append(0)
             assert (len(values) == point_count)
             return values
     except:

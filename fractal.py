@@ -14,7 +14,7 @@ def instantiate_points(point_count):
     points = np.zeros((point_count, 2))
     for i in range(point_count):
         const = 2 * math.pi * i / point_count
-        x, y = math.sin(const), math.cos(const)
+        x, y = -math.cos(const), math.sin(const)
         points[i] = [x, y]
 
     return points
