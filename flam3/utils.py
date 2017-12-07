@@ -1,4 +1,9 @@
 import numpy as np
+import struct
+
+
+def hex_to_rgb(hexstr):
+    return struct.unpack('BBB', b''.fromhex(hexstr))
 
 
 def mat_to_color(mat, colors=((66, 66, 111), (244, 164, 96))):
@@ -16,6 +21,6 @@ def point_to_image_mat(mat, img_size=(500, 500)):
     mul_factor_y = (img_size[1] - 1) / y_rng
     img = np.zeros(img_size)
     for x, y in mat.T:
-        # TODO: Increment by 1 instead of set to 1
+        # TODO: Increment by 1 instead of set to 1 to keep track of the number of times a pixel appears
         img[int((x - x_min) * mul_factor_x), int((y - y_min) * mul_factor_y)] = 1
     return img

@@ -134,7 +134,7 @@ class Fractal(object):
         #if len(self.selection_limiter) != self.point_count:
         #    raise Exception('Selection limiter is not equal to point count!')
 
-    def execute(self):
+    def execute(self, output=None):
         self.validate()
         return fractal_loop(self.selection_limiter, self.scaling_factor, self.run_count,
                             self.dry_fire, self.point_count)

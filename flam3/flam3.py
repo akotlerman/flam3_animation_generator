@@ -2,6 +2,7 @@ from utils import mat_to_color, point_to_image_mat
 from fractal import Fractal
 import matplotlib.pyplot as plt
 import click
+from skimage import io
 
 
 @click.group()
@@ -36,11 +37,17 @@ def validate_selection_limiter(ctx, param, value):
               help='Number of loop to run')
 @click.option('--dry-fire', '-d', default=1000, type=click.IntRange(0, 10000),
               help='Number of non-interactive runs to establish flam3 algorithm. Value in range (0, 10000).')
-def gen_fractal(run_count, dry_fire, point_count, scaling_factor, selection_limiter):
+@click.option('--save', '-s', default="", type=click.STRING,
+              help='Save to image file using scikit-image.')
+def gen_fractal(run_count, dry_fire, point_count, scaling_factor, selection_limiter, save):
     mat_points = Fractal(run_count=run_count, dry_fire=dry_fire, point_count=point_count,
                          scaling_factor=scaling_factor, selection_limiter=selection_limiter).execute()
-    fig, ax = plt.subplots()
-    h = ax.imshow(mat_to_color(point_to_image_mat(mat_points)))
+    img = mat_to_color(point_to_image_mat(mat_points))
+    if save:
+        io.imsave(save, img)
+    else:
+        plt.imshow(img)
+        plt.show()
     """
     mat_points1 = Fractal(point_count=6, selection_limiter=[False, True, False, False, False, False]).execute()
     mat_points2 = Fractal(point_count=6, selection_limiter=[False, False, False, False, False, True]).execute()
@@ -48,7 +55,6 @@ def gen_fractal(run_count, dry_fire, point_count, scaling_factor, selection_limi
     h = ax[0].imshow(mat_to_color(point_to_image_mat(mat_points1)))
     h = ax[1].imshow(mat_to_color(point_to_image_mat(mat_points2)))
     """
-    plt.show()
 
 
 def validate_file_type(ctx, param, value):
