@@ -1,10 +1,10 @@
 import math
-import numba as nb
+#import numba as nb
 import numpy as np
 import random
 
 
-@nb.jit(nopython=True)
+#@nb.jit(nopython=True)
 def instantiate_points(point_count):
     """
     Creates points on a unit circle of count pointCount
@@ -20,7 +20,7 @@ def instantiate_points(point_count):
     return points
 
 
-@nb.jit(nopython=True)
+#@nb.jit(nopython=True)
 def choices(selection_limiter):
     """
     Generator that provides choices for the flam3 algorithm.
@@ -68,7 +68,7 @@ def choices(selection_limiter):
             yield choice
 
 
-@nb.jit(nb.types.UniTuple(nb.float64, 2)(nb.float64, nb.float64, nb.float64, nb.float64, nb.int16), nopython=True)
+#@nb.jit(nb.types.UniTuple(nb.float64, 2)(nb.float64, nb.float64, nb.float64, nb.float64, nb.int16), nopython=True)
 def create_point(point_x, point_y, vertex_x, edge_y, scaling_factor=2):
     """
     Creates a point using [scaling] averages
@@ -83,7 +83,7 @@ def create_point(point_x, point_y, vertex_x, edge_y, scaling_factor=2):
     return (point_x + vertex_x) / scaling_factor, (point_y + edge_y) / scaling_factor
 
 
-@nb.jit(nopython=True)
+#@nb.jit(nopython=True)
 def fractal_loop(selection_limiter, scaling_factor, run_count, dry_fire, point_count):
     """
 
